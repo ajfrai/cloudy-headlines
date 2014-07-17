@@ -29,20 +29,31 @@ def make_header():
 	
 	#st.header('Track media trends visually')
 
-def dropdown():
+def slider():
+	filter = bucket.objects.filter(Prefix=f'clouds/1')
+	last_date = sorted([datetime.datetime.strptime(x.key.split("/")[2],"%Y-%m-%dT%HH") for x in filter],reverse=True)[0]
+	chosen_date = st.slider(
+		"Which date would you like to view headlines for:",
+		value=last_date,
+		max_value=last_date,
+		min_value=datetime.datetime.strptime("2021-04-12","%Y-%m-%d"),
+		format="MM/DD/YY"
+	)
+	return datetime.datetime.strftime(chosen_date,'%Y-%m-%d')
+
+def cloud_selector():
+	date = slider()
 	options = ('Unigrams','Bigrams')
-	selection = st.selectbox('What token length would you like to visualize?',options)
-	make_images(options.index(selection)+1)
+	token_len = st.selectbox('What token length would you like to visualize?',options)
+	make_images(options.index(token_len)+1,date)
 	
 
-def make_images(selection):
+def make_images(token_len,date):
 	a,b = st.beta_columns(2)
 	columns = [a,b]
-
-	filter = bucket.objects.filter(Prefix=f'clouds/{selection}/')
-	date = sorted([datetime.datetime.strptime(x.key.split("/")[2],"%Y-%m-%dT%HH") for x in filter],reverse=True)[0]
-	date_string = datetime.datetime.strftime(date,"%Y-%m-%dT%HH")
-	images = bucket.objects.filter(Prefix='clouds/{}/{}/'.format(selection,date_string))
+	filter = bucket.objects.filter(Prefix=f'clouds/1')
+	date = [x.key.split("/")[2] for x in filter if date in x.key][0]
+	images = bucket.objects.filter(Prefix='clouds/{}/{}/'.format(token_len,date))
 	bucket_path = f'https://s3.amazonaws.com/{os.environ["aws_bucket_name"]}'
 	for i,image in enumerate(images):
 		
@@ -52,11 +63,11 @@ def make_images(selection):
 		image_path = f"{bucket_path}/{image.key}"
 		
 		columns[i%2].image(image_path,use_column_width=True)
-	st.write("Last updated: {} UTC".format(date_string.replace("T"," @ ").replace("H","")))
+	st.write("Last updated: {} UTC".format(date.replace("T"," @ ").replace("H","")))
 
 
 if __name__ == '__main__':
 	make_header()
-	dropdown()
+	cloud_selector()
 
 
