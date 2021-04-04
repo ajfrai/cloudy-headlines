@@ -3,6 +3,7 @@ import requests
 import datetime
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
+import nltk
 from nltk.corpus import stopwords
 from wordcloud import WordCloud
 from matplotlib import pyplot as plt
