@@ -40,7 +40,7 @@ def word_clouds(stories_dict,n,min_occurences=0):
         
         
         wordcloud = WordCloud(colormap='winter',
-                              font_path = '/System/Library/Fonts/MuktaMahee.ttc',
+                              font_path = 'fonts/MuktaMahee.ttc',
                               prefer_horizontal = .95,
                               mask = mask,
                               scale=1,
