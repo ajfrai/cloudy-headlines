@@ -1,3 +1,11 @@
+pandas
+Pillow
+nltk
+matplotlib
+wordcloud
+numpy
+psycopg2
+sklearn
 django
 gunicorn
 django-heroku
