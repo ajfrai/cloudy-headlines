@@ -10,6 +10,9 @@ from PIL import Image, ImageOps
 import psycopg2
 import os
 
+nltk.download('stopwords')
+
+
 stop_words = set(stopwords.words('english')).union(set(['may','say','says','said','could','new','like','one','two','year','get','still','since']))
 stop_words.remove('all')
 site_specific_stop_words = {'https:www.foxnews.com':['fox'],
