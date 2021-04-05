@@ -1,0 +1,1 @@
+static assets: https://devcenter.heroku.com/articles/django-assets
