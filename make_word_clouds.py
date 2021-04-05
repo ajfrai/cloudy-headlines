@@ -14,7 +14,7 @@ import os
 nltk.download('stopwords')
 
 
-stop_words = set(stopwords.words('english')).union(set(['may','say','says','said','could','new','like','one','two','year','get','still','since']))
+stop_words = set(stopwords.words('english')).union(set(['may','say','says','said','could','new','like','one','two','year','get','still','since','news']))
 stop_words.remove('all')
 site_specific_stop_words = {'https:www.foxnews.com':['fox'],
                            'https://nytimes.com':['new','york','times']}
@@ -51,7 +51,7 @@ def word_clouds(stories_dict,n,min_occurences=0):
                               scale=1,
                               background_color='white',).generate_from_frequencies(frequencies = frequency_dict)
         
-        ax.set_title(root)
+        ax.imshow(wordcloud)
         ax.axis('off')
         d = root.replace("https://","").replace("www.","").replace(".com","").split("/")[0]
         path = f'clouds/{n}/{d}-{stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%HH")}.png'
