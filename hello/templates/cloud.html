@@ -1,6 +1,3 @@
-{% extends "base.html" %}
-{% load static %}
-{% block content %}
-<img src= {{ cloud_path }}> </img>
 
-{% endblock %}
+{% load static %}
+<img src= "{% static cloud_path %}"> </img>
