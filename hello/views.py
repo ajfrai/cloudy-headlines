@@ -6,8 +6,9 @@ from .models import Greeting
 
 # Create your views here.
 def index(request):
-    times = int(os.environ.get('TIMES',3))
-    return HttpResponse('Hello! ' * times)
+	clouds = os.listdir('clouds/1')
+	cloud_path = clouds[-1]
+    render(request, "cloud.html", {"cloud_path": cloud_path})
 
 def db(request):
 
