@@ -21,7 +21,12 @@ site_specific_stop_words = {'https:www.foxnews.com':['fox'],
 
 
 connection = psycopg2.connect(os.environ['dsn'])
-headlines = pd.read_sql('select domain,headline,timestamp from public.headlines',connection).replace('', np.nan).dropna()
+q = """
+select *
+from (select *,rank() over (partition by domain order by timestamp desc) as r from public.headlines) h
+where r = 1
+"""
+headlines = pd.read_sql(q,connection).replace('', np.nan).dropna()
 headlines_dict = {domain:{'stories':list(set(headlines[headlines.domain == domain].headline,)),
                           'timestamp':headlines[headlines.domain == domain].timestamp.max() }for domain in headlines.domain.unique()}
 def word_clouds(stories_dict,n,min_occurences=0):
