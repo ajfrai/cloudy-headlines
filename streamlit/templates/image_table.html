@@ -1,0 +1,13 @@
+<table>
+{% for image in images %}
+{% if loop.index+1 is divisibleby 2 %}
+<tr>
+{% endif %}
+<td>
+<img src={{ image }}></img>
+</td>
+{% if loop.index is divisibleby 2 %}
+</tr>
+{% endif %}
+{% endfor %}
+</table>
