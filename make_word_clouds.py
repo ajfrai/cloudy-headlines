@@ -32,9 +32,10 @@ headlines_dict = {domain:{'stories':list(set(headlines[headlines.domain == domai
 def word_clouds(stories_dict,n,min_occurences=0):
     
     plots = []
-    mask_bytes = requests.get('https://gist.github.com/teoliphant/7709098/raw/e826895ca1d8d85b20265b6759f1d64086e29dd7/ell_mask.png').content                       
-    open('mask.png','wb').write(mask_bytes)
-    mask = np.array(ImageOps.invert(Image.open('mask.png')))
+    if 'mask.png' not in os.listdir('templates'):
+      mask_bytes = requests.get('https://gist.githubusercontent.com/teoliphant/7709098/raw/e826895ca1d8d85b20265b6759f1d64086e29dd7/circ_mask.png').content                       
+      open('templates/mask.png','wb').write(mask_bytes)
+    mask = np.array(ImageOps.invert(Image.open('templates/mask.png')))
     for i,root in enumerate(stories_dict.keys()):
         fig,ax = plt.subplots(figsize=(15,10))
         stories = stories_dict[root]['stories']
@@ -54,8 +55,7 @@ def word_clouds(stories_dict,n,min_occurences=0):
         ax.imshow(wordcloud)
         ax.axis('off')
         d = root.replace("https://","").replace("www.","").replace(".com","").split("/")[0]
-        path = f'streamlit/clouds/{n}/{d}-{stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%HH")}.png'
-        open('streamlit/last_updated.txt','w').write(stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%H"))
+        path = f'clouds/{n}/{d}-{stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%HH")}.jpg'
         plt.savefig(path)
 
 for n in [1,2]:
