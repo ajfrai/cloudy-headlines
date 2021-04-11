@@ -11,6 +11,8 @@ from PIL import Image, ImageOps
 import psycopg2
 import os
 
+
+
 nltk.download('stopwords')
 
 
@@ -56,6 +58,7 @@ def word_clouds(stories_dict,n,min_occurences=0):
         ax.axis('off')
         d = root.replace("https://","").replace("www.","").replace(".com","").split("/")[0]
         path = f'clouds/{n}/{d}-{stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%HH")}.jpg'
+        open('last_updated.txt','w').write(stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%HH"))
         plt.savefig(path)
 
 for n in [1,2]:
