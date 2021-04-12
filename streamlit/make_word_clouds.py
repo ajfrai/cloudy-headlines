@@ -10,9 +10,10 @@ from matplotlib import pyplot as plt
 from PIL import Image, ImageOps
 import psycopg2
 import os
+import boto3
 
 
-
+print("Setting up wordcloud generation environment...")
 nltk.download('stopwords')
 
 
@@ -22,6 +23,7 @@ site_specific_stop_words = {'https:www.foxnews.com':['fox'],
                            'https://nytimes.com':['new','york','times']}
 
 
+print("Reading headlines from Redis")
 connection = psycopg2.connect(os.environ['dsn'])
 q = """
 select *
@@ -31,7 +33,14 @@ where r = 1
 headlines = pd.read_sql(q,connection).replace('', np.nan).dropna()
 headlines_dict = {domain:{'stories':list(set(headlines[headlines.domain == domain].headline,)),
                           'timestamp':headlines[headlines.domain == domain].timestamp.max() }for domain in headlines.domain.unique()}
-def word_clouds(stories_dict,n,min_occurences=0):
+
+
+print("Authenticating to S3")
+s3 = boto3.resource('s3',region_name = 'us-east-1',aws_access_key_id = os.environ['aws_access_key_id'],aws_secret_access_key = os.environ['aws_secret_access_key'])
+bucket = s3.Bucket('cloudy-headlines')
+
+
+def write_word_clouds(stories_dict,n,min_occurences=0):
     
     plots = []
     if 'mask.png' not in os.listdir('templates'):
@@ -57,9 +66,16 @@ def word_clouds(stories_dict,n,min_occurences=0):
         ax.imshow(wordcloud)
         ax.axis('off')
         d = root.replace("https://","").replace("www.","").replace(".com","").split("/")[0]
-        path = f'clouds/{n}/{d}-{stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%HH")}.jpg'
-        open('last_updated.txt','w').write(stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%HH"))
+        directory = f'clouds/{n}/{stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%HH")}'
+        if stories_dict[root]["timestamp"].strftime("%Y-%m-%dT%HH") not in os.listdir(f'clouds/{n}'):
+          os.mkdir(directory)
+        path = f'{directory}/{d}.jpg'
         plt.savefig(path)
+        print("Writing {} to S3".format(path))
+        bucket.upload_file(path,path)
+
 
 for n in [1,2]:
-	word_clouds(headlines_dict,n)
+  print("Writing wordclouds for {}-length tokens".format(n))
+  write_word_clouds(headlines_dict,n)
+
