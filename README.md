@@ -1,6 +1,6 @@
 # Cloudy Headlines
 
-A <a href="https://www.waterqualitydata.us/portal/"> streamlit</a> app that displays daily headlines in word cloud form. The application is hosted on Heroku and available <a href="https://nameless-hamlet-76344.herokuapp.com/">here </a>.<br><br>
+A <a href="https://streamlit.io/"> streamlit</a> app that displays daily headlines in word cloud form. The application is hosted on Heroku and available <a href="https://nameless-hamlet-76344.herokuapp.com/">here </a>.<br><br>
 The data pipeline makes use of Heroku scheduler. Each day, a scheduled task calls an AWS lambda function to scrape Washington Post, New York Times, Fox News and CNN headlines. A second scheduled task generates unigram and bigram word clouds and stores them on S3.<br><br>
 The word clouds are displayed on the application home page. 
 
