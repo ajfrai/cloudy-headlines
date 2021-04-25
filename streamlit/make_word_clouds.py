@@ -37,7 +37,7 @@ headlines_dict = {domain:{'stories':list(set(headlines[headlines.domain == domai
 
 print("Authenticating to S3")
 s3 = boto3.resource('s3',region_name = 'us-east-1',aws_access_key_id = os.environ['aws_access_key_id'],aws_secret_access_key = os.environ['aws_secret_access_key'])
-bucket = s3.Bucket('cloudy-headlines')
+bucket = s3.Bucket(os.environ['aws_bucket_name'])
 
 
 def write_word_clouds(stories_dict,n,min_occurences=0):

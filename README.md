@@ -1,45 +1,20 @@
-# Python: Getting Started
+# Cloudy Headlines
 
-A barebones Django app, which can easily be deployed to Heroku.
+A <a href="https://www.waterqualitydata.us/portal/"> stremlit</a> app that displays daily headlines in word cloud form. The application is hosted on Heroku and available <a href="https://nameless-hamlet-76344.herokuapp.com/">here </a>.<br><br>
+The data pipeline makes use of Heroku scheduler. Each day, a scheduled task calls an AWS lambda function to scrape Washington Post, New York Times, Fox News and CNN headlines. A second scheduled task generates unigram and bigram word clouds and stores them on S3.<br><br>
+The word clouds are displayed on the application home page. 
 
-This application supports the [Getting Started with Python on Heroku](https://devcenter.heroku.com/articles/getting-started-with-python) article - check it out.
+# Future Improvements
 
-## Running Locally
+Cloudy Headlines is not a complete effort. There are a number of ways this application could improve:
+1. The headline scraper could pull headlines from additional news sources.
+2. The headline scraper currently pulls data from specific endpoints for the scraped news sources. It's possible that these are not the best endpoints ot hit for these outlets. This merits further investigation.
+3. The word cloud generator would benefit from improved language preprocessing.
 
-Make sure you have Python 3.9 [installed locally](https://docs.python-guide.org/starting/installation/). To push to Heroku, you'll need to install the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli), as well as [Postgres](https://devcenter.heroku.com/articles/heroku-postgresql#local-setup).
+# Future Features
 
-```sh
-$ git clone https://github.com/heroku/python-getting-started.git
-$ cd python-getting-started
-
-$ python3 -m venv getting-started
-$ pip install -r requirements.txt
-
-$ createdb python_getting_started
-
-$ python manage.py migrate
-$ python manage.py collectstatic
-
-$ heroku local
-```
-
-Your app should now be running on [localhost:5000](http://localhost:5000/).
-
-## Deploying to Heroku
-
-```sh
-$ heroku create
-$ git push heroku main
-
-$ heroku run python manage.py migrate
-$ heroku open
-```
-or
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
-## Documentation
-
-For more information about using Python on Heroku, see these Dev Center articles:
-
-- [Python on Heroku](https://devcenter.heroku.com/categories/python)
+1. Visitors should have the ability to view 
+	- historic clouds
+	- unigram and bigram count trends over time
+	- full headlines associated with specific tokens
+2. We all know word clouds are a very controversial way to visualize natural language data. The website should provide a detailed disclaimer.

@@ -18,7 +18,7 @@ import os
 import boto3
 
 s3 = boto3.resource('s3',region_name = 'us-east-1',aws_access_key_id = os.environ['aws_access_key_id'],aws_secret_access_key = os.environ['aws_secret_access_key'])
-bucket = s3.Bucket('cloudy-headlines')
+bucket = s3.Bucket(os.environ['aws_bucket_name'])
 
 
 
@@ -43,7 +43,7 @@ def make_images(selection):
 	date = sorted([datetime.datetime.strptime(x.key.split("/")[2],"%Y-%m-%dT%HH") for x in filter],reverse=True)[0]
 	date_string = datetime.datetime.strftime(date,"%Y-%m-%dT%HH")
 	images = bucket.objects.filter(Prefix='clouds/{}/{}/'.format(selection,date_string))
-	bucket_path = 'https://s3.amazonaws.com/cloudy-headlines'
+	bucket_path = f'https://s3.amazonaws.com/{os.environ['aws_bucket_name']}'
 	for i,image in enumerate(images):
 		
 		columns[i%2].markdown(f'<center> <b>{image.key.split("/")[3].split(".")[0].upper()}</b> </center>',
