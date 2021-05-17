@@ -36,7 +36,7 @@ def slider():
 		"Which date would you like to view headlines for:",
 		value=last_date,
 		max_value=last_date,
-		min_value=datetime.datetime.strptime("2021-04-12","%Y-%m-%d"),
+		min_value=datetime.datetime.strptime("2021-04-12T12H","%Y-%m-%dT%HH"),
 		format="MM/DD/YY"
 	)
 	return datetime.datetime.strftime(chosen_date,'%Y-%m-%d')
